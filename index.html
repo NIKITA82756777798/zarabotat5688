@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кликер: Стань Миллионером</title>
+    <!-- Подключение стилей -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h2>🚀 Академия Легких Денег 🚀</h2>
+        <div class="stats-bar">
+            <span>Уровень: <b id="level-display">1</b></span>
+            <span>| Доход в сек: <b id="income-per-sec">0</b> ₽</span>
+        </div>
+        <button class="donate-btn" onclick="giveDonation()">💵 Донат на развитие</button>
+    </header>
+
+    <div class="main-area">
+        <div id="balance-display">0 ₽</div>
+        <p class="multiplier-info">Сила клика: <span id="current-multiplier">1x</span></p>
+        <!-- Кнопка тапа -->
+        <button id="tap-button" onclick="tap()">💰 ТАПАТЬ ЗДЕСЬ 💰</button>
+    </div>
+
+    <!-- Таймер пассивного дохода -->
+    <div class="free-money-timer" id="free-money-timer">
+        Бесплатные деньги через: <span id="timer-count">10</span> сек.
+    </div>
+
+    <div class="shop-container">
+        <!-- Карточка курса 1 -->
+        <div class="course-card" id="card-1">
+            <h3>Курс "Новичок"</h3>
+            <p>Базовые знания о деньгах. Дает небольшой буст.</p>
+            <span class="price-tag" id="price-1">50 ₽</span>
+            <button class="buy-btn" onclick="buyCourse(1)">Купить</button>
+        </div>
+
+        <!-- Карточка курса 2 -->
+        <div class="course-card" id="card-2">
+            <h3>Курс "Трейдер"</h3>
+            <p>Учимся покупать дешево, продавать дорого.</p>
+            <span class="price-tag" id="price-2">200 ₽</span>
+            <button class="buy-btn" onclick="buyCourse(2)">Купить</button>
+        </div>
+
+        <!-- Карточка курса 3 -->
+        <div class="course-card" id="card-3">
+            <h3>Курс "Инвестор"</h3>
+            <p>Долгосрочные вложения и сложные проценты.</p>
+            <span class="price-tag" id="price-3">500 ₽</span>
+            <button class="buy-btn" onclick="buyCourse(3)">Купить</button>
+        </div>
+
+        <!-- Карточка курса 4 -->
+        <div class="course-card" id="card-4">
+            <h3>Курс "Крипта"</h3>
+            <p>Блокчейн, волатильность и быстрые деньги.</p>
+            <span class="price-tag" id="price-4">1000 ₽</span>
+            <button class="buy-btn" onclick="buyCourse(4)">Купить</button>
+        </div>
+
+        <!-- Карточка курса 5 -->
+        <div class="course-card" id="card-5">
+            <h3>Курс "Бизнесмен"</h3>
+            <p>Управление активами и масштабирование.</p>
+            <span class="price-tag" id="price-5">2500 ₽</span>
+            <button class="buy-btn" onclick="buyCourse(5)">Купить</button>
+        </div>
+
+        <!-- Карточка курса 6 -->
+        <div class="course-card" id="card-6">
+            <h3>Курс "Магнат"</h3>
+            <p>Стратегии мирового уровня.</p>
+            <span class="price-tag" id="price-6">5000 ₽</span>
+            <button class="buy-btn" onclick="buyCourse(6)">Купить</button>
+        </div>
+
+        <!-- Карточка курса 7 -->
+        <div class="course-card" id="card-7">
+            <h3>Курс "Олигарх"</h3>
+            <p>Искусство управления капиталом.</p>
+            <span class="price-tag" id="price-7">10000 ₽</span>
+            <button class="buy-btn" onclick="buyCourse(7)">Купить</button>
+        </div>
+
+        <!-- Карточка курса 8 -->
+        <div class="course-card" id="card-8">
+            <h3>Курс "Легенда"</h3>
+            <p>Абсолютное владение рынком.</p>
+            <span class="price-tag" id="price-8">50000 ₽</span>
+            <button class="buy-btn" onclick="buyCourse(8)">Купить</button>
+        </div>
+    </div>
+
+    <!-- Экран победы -->
+    <div class="winner-screen" id="winner-screen">
+        <h1 class="millionaire-title">ТЫ МИЛЛИОНЕР! 🎉</h1>
+        <p>Ты купил все курсы и стал легендой!</p>
+        <button class="restart-btn" onclick="location.reload()">Начать заново</button>
+    </div>
+
+    <!-- Скрипт подключается в конце, чтобы HTML успел загрузиться -->
+    <script src="script.js"></script>
+</body>
+
+</html>
