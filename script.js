@@ -1,237 +1,25 @@
-let balance = 0;
-let multiplier = 1;
-let passiveIncome = 0;
-let level = 1;
-const totalCourses = 8;
-let boughtCount = 0;
+let balance = 0, multiplier = 1, passiveIncome = 0, level = 1, boughtCount = 0;
+const courses = [{ id: 1, price: 50, bonus: .01, bought: !1 }, { id: 2, price: 200, bonus: .02, bought: !1 }, { id: 3, price: 500, bonus: .03, bought: !1 }, { id: 4, price: 1000, bonus: .05, bought: !1 }, { id: 5, price: 2500, bonus: .08, bought: !1 }, { id: 6, price: 5000, bonus: .1, bought: !1 }, { id: 7, price: 10000, bonus: .12, bought: !1 }, { id: 8, price: 50000, bonus: .15, bought: !1 }];
+const balanceEl = document.getElementById('balance-display'), multiplierEl = document.getElementById('current-multiplier'), incomeEl = document.getElementById('income-per-sec'), levelEl = document.getElementById('level-display'), timerCountEl = document.getElementById('timer-count'), winnerScreen = document.getElementById('winner-screen'), msgBox = document.getElementById('game-message');
 
-const courses = [
-    { id: 1, price: 50, bonus: 0.01, bought: false },
-    { id: 2, price: 200, bonus: 0.02, bought: false },
-    { id: 3, price: 500, bonus: 0.03, bought: false },
-    { id: 4, price: 1000, bonus: 0.05, bought: false },
-    { id: 5, price: 2500, bonus: 0.08, bought: false },
-    { id: 6, price: 5000, bonus: 0.10, bought: false },
-    { id: 7, price: 10000, bonus: 0.12, bought: false },
-    { id: 8, price: 50000, bonus: 0.15, bought: false }
-];
+document.addEventListener('DOMContentLoaded', () => { updateUI(); startPassiveIncome(); startFreeMoneyTimer(); });
 
-let purchasedCoursesIds = [];
+function tap() { const amount = Math.floor(1 * multiplier); balance += amount; showFloatingText(amount); updateUI(); checkWinCondition(); }
 
-const msgBox = document.createElement('div');
-msgBox.id = 'game-message';
-msgBox.style.position = 'fixed';
-msgBox.style.top = '10px';
-msgBox.style.right = '10px';
-msgBox.style.padding = '15px 25px';
-msgBox.style.borderRadius = '50px';
-msgBox.style.fontWeight = 'bold';
-msgBox.style.zIndex = '3000';
-msgBox.style.pointerEvents = 'none';
-msgBox.style.opacity = '0';
-msgBox.style.transition = 'opacity 0.5s';
-document.body.appendChild(msgBox);
+function buyCourse(id) { const course = courses.find(c => c.id === id); if (!course || course.bought) return; if (balance >= course.price) { balance -= course.price; course.bought = !0; passiveIncome += course.bonus; boughtCount++; const card = document.getElementById(`card-${id}`), btn = card ? card.querySelector('.buy-btn') : null, price = card ? card.querySelector('.price-tag') : null; if (card) card.classList.add('bought'); if (btn) { btn.disabled = !0; btn.textContent = 'Куплено'; } if (price) price.style.opacity = '0.5'; updateUI(); showMessage(`Курс ${course.id} куплен! Доход +${course.bonus}/сек`) } else { showMessage('Не хватает денег!'); } }
 
-function showMsg(text, type) {
-    msgBox.innerText = text;
-    if (type === 'success') {
-        msgBox.style.background = '#4caf50';
-        msgBox.style.color = 'white';
-    } else {
-        msgBox.style.background = '#f44336';
-        msgBox.style.color = 'white';
-    }
-    msgBox.style.opacity = '1';
-    setTimeout(() => { msgBox.style.opacity = '0'; }, 3000);
-}
+function startPassiveIncome() { setInterval(() => { if (passiveIncome > 0) { balance += passiveIncome; updateUI(); checkWinCondition(); } }, 1000); }
 
-function init() {
-    try {
-        const savedData = localStorage.getItem('clickerGameData');
-        if (savedData) {
-            const data = JSON.parse(savedData);
-            balance = data.balance;
-            multiplier = data.multiplier;
-            passiveIncome = data.passiveIncome;
-            level = data.level;
-            purchasedCoursesIds = data.purchasedCoursesIds || [];
-            boughtCount = purchasedCoursesIds.length;
+function startFreeMoneyTimer() { let timeLeft = 10; const timerInterval = setInterval(() => { timeLeft--; timerCountEl.textContent = timeLeft; if (timeLeft <= 0) { clearInterval(timerInterval); const freeMoney = Math.floor(balance * .1) || 10; balance += freeMoney; showMessage(`+${freeMoney} ₽ бесплатно!`); timeLeft = 10; setTimeout(() => startFreeMoneyTimer(), 2000); } }, 1000); }
 
-            purchasedCoursesIds.forEach(id => {
-                const course = courses.find(c => c.id === id);
-                if (course) course.bought = true;
-            });
-        }
-        updateUI();
-        startPassiveTimer();
-    } catch (e) {
-        console.error("Ошибка загрузки:", e);
-    }
-}
+function checkWinCondition() { if (balance >= 1000000 && !winnerScreen.style.display.includes('block')) winnerScreen.style.display = 'flex'; }
 
-function tap() {
-    const amount = Math.floor(10 * multiplier);
-    balance += amount;
-    showFloatingText(amount);
-    checkLevelUp();
-    updateUI();
-}
+function restartGame() { balance = 0; multiplier = 1; passiveIncome = 0; level = 1; boughtCount = 0; courses.forEach(course => { course.bought = !1; const card = document.getElementById(`card-${course.id}`), btn = card ? card.querySelector('.buy-btn') : null, price = card ? card.querySelector('.price-tag') : null; if (card) card.classList.remove('bought'); if (btn) { btn.disabled = !1; btn.textContent = 'Купить'; } if (price) price.style.opacity = '1'; }); winnerScreen.style.display = 'none'; updateUI(); showMessage('Игра перезапущена!'); }
 
-function showFloatingText(amount) {
-    const text = document.createElement('span');
-    text.innerText = '+' + amount;
-    text.style.position = 'absolute';
-    const btn = document.getElementById('tap-button');
-    if (!btn) return;
-    const rect = btn.getBoundingClientRect();
+function updateUI() { balanceEl.textContent = formatMoney(balance) + ' ₽'; multiplierEl.textContent = `${multiplier}x`; incomeEl.textContent = Math.floor(passiveIncome); levelEl.textContent = Math.max(1, Math.floor(Math.log10(balance)) + 1); }
 
-    text.style.top = (rect.top + rect.height / 2 - 50) + 'px';
-    text.style.left = (rect.left + rect.width / 2) + 'px';
-    text.style.color = '#fff';
-    text.style.fontWeight = 'bold';
-    text.style.fontSize = '2em';
-    text.style.pointerEvents = 'none';
-    text.style.userSelect = 'none';
-    document.body.appendChild(text);
+function formatMoney(num) { if (num >= 1000000) return (num / 1000000).toFixed(2) + 'M'; if (num >= 1000) return (num / 1000).toFixed(1) + 'k'; return num.toString(); }
 
-    let start = null;
-    const duration = 1000;
+function showFloatingText(amount) { const el = document.createElement('div'); el.textContent = '+' + amount; el.style.position = 'absolute'; el.style.left = '50%'; el.style.top = '30%'; el.style.transform = 'translateX(-50%) translateY(-50%)'; el.style.color = '#ffd700'; el.style.fontWeight = 'bold'; el.style.fontSize = '24px'; el.style.pointerEvents = 'none'; el.style.textShadow = '0 0 10px rgba(255,215,0,0.8)'; document.body.appendChild(el); setTimeout(() => { el.style.transition = 'all 0.5s ease'; el.style.opacity = '0'; el.style.transform = 'translateX(-50%) translateY(-100px)'; setTimeout(() => el.remove(), 500); }, 50); }
 
-    function animate(timestamp) {
-        if (!start) start = timestamp;
-        const progress = timestamp - start;
-        const percent = Math.min(progress / duration, 1);
-        text.style.transform = `translateY(-${percent * 100}px) scale(${1 - percent * 0.5})`;
-        text.style.opacity = 1 - percent;
-        if (percent < 1) {
-            requestAnimationFrame(animate);
-        } else {
-            text.remove();
-        }
-    }
-    requestAnimationFrame(animate);
-}
-
-function checkLevelUp() {
-    if (balance >= level * 1000 && level < 10) {
-        level++;
-        showMsg(`Поздравляем! Уровень ${level}!`, "success");
-    }
-}
-
-function buyCourse(id) {
-    const course = courses.find(c => c.id === id);
-    if (!course) return;
-
-    if (course.bought) {
-        showMsg("Этот курс уже куплен!", "error");
-        return;
-    }
-
-    if (balance >= course.price) {
-        balance -= course.price;
-        course.bought = true;
-        purchasedCoursesIds.push(id);
-        boughtCount++;
-
-        passiveIncome += course.bonus * 10;
-        multiplier += course.bonus;
-
-        updateUI();
-        showMsg("Курс успешно куплен!", "success");
-
-        if (boughtCount === totalCourses) {
-            showWinnerScreen();
-        }
-    } else {
-        showMsg("Недостаточно средств!", "error");
-    }
-}
-
-function startPassiveTimer() {
-    let timeLeft = 10;
-    const timerDisplay = document.getElementById('timer-count');
-
-    if (!timerDisplay) return;
-
-    const interval = setInterval(() => {
-        timeLeft--;
-        timerDisplay.innerText = timeLeft;
-
-        if (timeLeft <= 0) {
-            const income = Math.floor(passiveIncome);
-            if (income > 0) balance += income;
-            timeLeft = 10;
-            timerDisplay.innerText = timeLeft;
-            updateUI();
-
-            const timerEl = document.getElementById('free-money-timer');
-            if (timerEl) {
-                timerEl.style.animation = 'none';
-                timerEl.offsetHeight;
-                timerEl.style.animation = 'pulse 2s infinite';
-            }
-        }
-    }, 1000);
-}
-
-function giveDonation() {
-    balance += 100;
-    updateUI();
-    showMsg("Спасибо за донат! +100 ₽", "success");
-}
-
-function updateUI() {
-    document.getElementById('balance-display').innerText = balance + ' ₽';
-    document.getElementById('current-multiplier').innerText = multiplier.toFixed(2) + 'x';
-    document.getElementById('level-display').innerText = level;
-    document.getElementById('income-per-sec').innerText = passiveIncome.toFixed(1);
-
-    courses.forEach(course => {
-        const card = document.getElementById(`card-${course.id}`);
-        const btn = card ? card.querySelector('.buy-btn') : null;
-        const priceSpan = document.getElementById(`price-${course.id}`);
-
-        if (!card || !btn || !priceSpan) return;
-
-        if (course.bought) {
-            card.classList.add('bought');
-            btn.disabled = true;
-            btn.innerText = "Куплено!";
-            btn.style.cursor = 'not-allowed';
-        } else {
-            card.classList.remove('bought');
-            if (balance >= course.price) {
-                btn.style.opacity = '1';
-                btn.disabled = false;
-                btn.innerText = "Купить";
-                btn.style.cursor = 'pointer';
-            } else {
-                btn.style.opacity = '0.5';
-                btn.disabled = true;
-                btn.innerText = "Не хватает денег";
-                btn.style.cursor = 'not-allowed';
-            }
-        }
-    });
-    saveGame();
-}
-
-function saveGame() {
-    const data = {
-        balance: balance,
-        multiplier: multiplier,
-        passiveIncome: passiveIncome,
-        level: level,
-        purchasedCoursesIds: purchasedCoursesIds
-    };
-    localStorage.setItem('clickerGameData', JSON.stringify(data));
-}
-
-function showWinnerScreen() {
-    document.body.style.overflow = 'hidden';
-    const screen = document.getElementById('winner-screen');
-    if (screen) screen.style.display = 'flex';
-}
-
-init();
+function showMessage(text) { msgBox.textContent = text; msgBox.style.opacity = '1'; setTimeout(() => { msgBox.style.opacity = '0'; }, 3000); }

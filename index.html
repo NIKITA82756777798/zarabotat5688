@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Кликер: Стань Миллионером</title>
-    <!-- Подключение стилей -->
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -14,85 +13,73 @@
     <header>
         <h2>🚀 Академия Легких Денег 🚀</h2>
         <div class="stats-bar">
-            <span>Уровень: <b id="level-display">1</b></span>
-            <span>| Доход в сек: <b id="income-per-sec">0</b> ₽</span>
+            Уровень: <b id="level-display">1</b> | Доход в сек: <b id="income-per-sec">0</b> ₽
         </div>
-        <button class="donate-btn" onclick="giveDonation()">💵 Донат на развитие</button>
+
+        <div class="donate-widget-container">
+            <!-- ВСТАВЬ СВОЮ ССЫЛКУ ДЛЯ ОПЛАТЫ ВМЕСТО # -->
+            <a href="https://yoomoney.ru/fundraise/1I9526CPHHL.260608" target="_blank" class="donate-btn">
+                💵 Поддержать проект
+            </a>
+        </div>
     </header>
 
     <div class="main-area">
         <div id="balance-display">0 ₽</div>
         <p class="multiplier-info">Сила клика: <span id="current-multiplier">1x</span></p>
-        <!-- Кнопка тапа -->
         <button id="tap-button" onclick="tap()">💰 ТАПАТЬ ЗДЕСЬ 💰</button>
     </div>
 
-    <!-- Таймер пассивного дохода -->
-    <div class="free-money-timer" id="free-money-timer">
+    <div class="free-money-timer">
         Бесплатные деньги через: <span id="timer-count">10</span> сек.
     </div>
 
     <div class="shop-container">
-        <!-- Карточка курса 1 -->
         <div class="course-card" id="card-1">
-            <h3>Курс "Новичок"</h3>
-            <p>Базовые знания о деньгах. Дает небольшой буст.</p>
+            <h3>Новичок</h3>
+            <p>Базовые знания о деньгах.</p>
             <span class="price-tag" id="price-1">50 ₽</span>
             <button class="buy-btn" onclick="buyCourse(1)">Купить</button>
         </div>
-
-        <!-- Карточка курса 2 -->
         <div class="course-card" id="card-2">
-            <h3>Курс "Трейдер"</h3>
-            <p>Учимся покупать дешево, продавать дорого.</p>
+            <h3>Трейдер</h3>
+            <p>Покупаем дешево, продаем дорого.</p>
             <span class="price-tag" id="price-2">200 ₽</span>
             <button class="buy-btn" onclick="buyCourse(2)">Купить</button>
         </div>
-
-        <!-- Карточка курса 3 -->
         <div class="course-card" id="card-3">
-            <h3>Курс "Инвестор"</h3>
-            <p>Долгосрочные вложения и сложные проценты.</p>
+            <h3>Инвестор</h3>
+            <p>Долгосрочные вложения.</p>
             <span class="price-tag" id="price-3">500 ₽</span>
             <button class="buy-btn" onclick="buyCourse(3)">Купить</button>
         </div>
-
-        <!-- Карточка курса 4 -->
         <div class="course-card" id="card-4">
-            <h3>Курс "Крипта"</h3>
-            <p>Блокчейн, волатильность и быстрые деньги.</p>
+            <h3>Крипто-гуру</h3>
+            <p>Все про блокчейн.</p>
             <span class="price-tag" id="price-4">1000 ₽</span>
             <button class="buy-btn" onclick="buyCourse(4)">Купить</button>
         </div>
-
-        <!-- Карточка курса 5 -->
         <div class="course-card" id="card-5">
-            <h3>Курс "Бизнесмен"</h3>
-            <p>Управление активами и масштабирование.</p>
+            <h3>Бизнес-ангел</h3>
+            <p>Стартапы и риски.</p>
             <span class="price-tag" id="price-5">2500 ₽</span>
             <button class="buy-btn" onclick="buyCourse(5)">Купить</button>
         </div>
-
-        <!-- Карточка курса 6 -->
         <div class="course-card" id="card-6">
-            <h3>Курс "Магнат"</h3>
-            <p>Стратегии мирового уровня.</p>
+            <h3>Венчурный фонд</h3>
+            <p>Крупные инвестиции.</p>
             <span class="price-tag" id="price-6">5000 ₽</span>
             <button class="buy-btn" onclick="buyCourse(6)">Купить</button>
         </div>
-
-        <!-- Карточка курса 7 -->
         <div class="course-card" id="card-7">
-            <h3>Курс "Олигарх"</h3>
-            <p>Искусство управления капиталом.</p>
+            <h3>Магнат</h3>
+            <p>Управление империями.</p>
             <span class="price-tag" id="price-7">10000 ₽</span>
             <button class="buy-btn" onclick="buyCourse(7)">Купить</button>
         </div>
-
-        <!-- Карточка курса 8 -->
         <div class="course-card" id="card-8">
-            <h3>Курс "Легенда"</h3>
-            <p>Абсолютное владение рынком.</p>
+            <h3>Легенда</h3>
+            <p>Абсолютная власть над рынком.</p>
             <span class="price-tag" id="price-8">50000 ₽</span>
             <button class="buy-btn" onclick="buyCourse(8)">Купить</button>
         </div>
@@ -100,12 +87,13 @@
 
     <!-- Экран победы -->
     <div class="winner-screen" id="winner-screen">
-        <h1 class="millionaire-title">ТЫ МИЛЛИОНЕР! 🎉</h1>
-        <p>Ты купил все курсы и стал легендой!</p>
-        <button class="restart-btn" onclick="location.reload()">Начать заново</button>
+        <h1 class="millionaire-title">ВЫ СТАЛИ МИЛЛИОНЕРОМ! 🎉</h1>
+        <button class="restart-btn" onclick="restartGame()">Начать заново</button>
     </div>
 
-    <!-- Скрипт подключается в конце, чтобы HTML успел загрузиться -->
+    <!-- Всплывающее сообщение -->
+    <div id="game-message"></div>
+
     <script src="script.js"></script>
 </body>
 
